@@ -3,13 +3,26 @@ import AppAllPasswords from "@/common/views/components/AppAllPasswords.vue";
 import Onboarding from "@/home/views/Onboarding.vue";
 import ProfileDetails from "@/home/views/parts/ProfileDetails.vue";
 import InstanceEditor from "@/home/views/parts/InstanceEditor.vue";
+import { useHomeStore } from "@/home/domain/homeStore";
+
+const homeStore = useHomeStore();
+
 </script>
 <template>
   <div class="home">
-    <AppAllPasswords class="home__passwords" />
-    <!--<Onboarding class="home__onboarding" />-->
-    <!--<ProfileDetails class="home__onboarding" />-->
-    <InstanceEditor class="home__onboarding" />
+    <AppAllPasswords class="home__passwords" v-if="homeStore.isWelcomePass" />
+    <Onboarding
+      class="home__onboarding"
+      v-if="homeStore.activeCard === 'onboarding'"
+    />
+    <ProfileDetails
+      class="home__onboarding"
+      v-if="homeStore.activeCard === 'profileDetails'"
+    />
+    <InstanceEditor
+      class="home__onboarding"
+      v-if="homeStore.activeCard === 'createItem'"
+    />
   </div>
 </template>
 <style lang="scss" scoped>

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import NotFound from "@/notFound/views/NotFoundView.vue";
 import Onboarding from "@/home/views/Onboarding.vue";
 import Home from "@/home/views/Home.vue";
+import HistoryView from "@/history/views/HistoryView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,6 +16,11 @@ const router = createRouter({
       path: "/onboarding",
       name: "Onboarding",
       component: Onboarding,
+    },
+    {
+      path: "/history",
+      name: "History",
+      component: HistoryView,
     },
     {
       path: "/:pathMatch(.*)*",

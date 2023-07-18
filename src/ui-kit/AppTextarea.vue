@@ -87,6 +87,11 @@ function saveValue() {
   emit("saveValue", inputValue.value);
 }
 
+function auto_grow(element: HTMLTextAreaElement) {
+  element.target.style.height = "5px";
+  element.target.style.height = element.target.scrollHeight + "px";
+}
+
 onMounted(() => {
   if (props.default || props.default === 0) {
     inputValue.value = props.default;
@@ -104,18 +109,15 @@ onMounted(() => {
       <svg class="input__search" v-if="props.isSearch">
         <use href="@/assets/icons/sprite.svg#search"></use>
       </svg>
-      <input
+      <textarea
         class="input__input"
         :class="{ search: props.isSearch, reveal: props.passwordReveal }"
         :style="{ backgroundColor: props.color }"
-        :type="!isShowValue ? inputType : 'text'"
-        :min="props.min"
-        :max="props.max"
-        :step="props.step"
         :placeholder="props.placeholder"
         :readonly="checkedValue"
         :disabled="props.disabled || props.locked"
         v-model="inputValue"
+        @input="auto_grow"
         @focus="$emit('focus')"
         @blur="$emit('blur', ref)"
       />
@@ -152,6 +154,7 @@ onMounted(() => {
     @extend .body-16;
     appearance: textfield;
     -moz-appearance: textfield;
+    resize: none;
     &.reveal {
       padding: 0 6.5rem 0 1.5rem;
     }

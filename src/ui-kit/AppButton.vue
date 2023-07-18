@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 const emit = defineEmits(["click"]);
-type types = "primary" | "danger" | "transparent" | "outline";
+type types = "primary" | "secondary" | "danger" | "transparent" | "outline";
 const props = defineProps<{
   type?: types;
   onHover?: types;
@@ -36,7 +36,6 @@ const btnType = computed<string>(() => props.type || "");
     font-size: rem(16);
     font-weight: 300;
     line-height: rem(22);
-    letter-spacing: -0.5px;
     background-color: transparent;
     border: 1px solid $color-grey-50;
     cursor: pointer;
@@ -70,6 +69,16 @@ const btnType = computed<string>(() => props.type || "");
     @include min-desktop() {
       &:hover {
         background-color: lighten($color-red-base, 5);
+      }
+    }
+  }
+  &.secondary {
+    background-color: $color-green-base;
+    border: 1px solid transparent;
+    color: $color-grey-800;
+    @include min-desktop() {
+      &:hover {
+        background-color: $color-green-light;
       }
     }
   }

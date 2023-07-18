@@ -4,6 +4,9 @@
   }
   &__item + &__item {
     padding: rem(16) 0;
+    &:last-child {
+      padding-bottom: 0;
+    }
     border-top: 1px solid $color-grey-700;
   }
   &__item-label {

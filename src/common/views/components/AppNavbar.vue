@@ -34,7 +34,7 @@ const links = [
   {
     icon: "history",
     name: "History",
-    route: "",
+    route: "History",
     children: [],
   },
   {
@@ -97,12 +97,12 @@ function checkRoute(currentRouteName: string): boolean {
             class="navbar__chevron"
             :class="{ reverse: !isDropdown }"
             @click="isDropdown = !isDropdown"
-            v-if="link.children && width === full"
+            v-if="link.children.length && width === full"
           >
             <AppIcon name="chevron-down" size="xs" />
           </button>
         </div>
-        <template v-if="link.children && width === full">
+        <template v-if="link.children.length && width === full">
           <Transition>
             <div class="navbar__dropdown" v-if="isDropdown">
               <router-link

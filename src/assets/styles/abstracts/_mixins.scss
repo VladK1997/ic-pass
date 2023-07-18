@@ -25,3 +25,18 @@
 @function rem($size) {
   @return #{math.div($size,$remFontSize)}rem
 }
+
+@mixin custom-scrollbar-thick {
+  scrollbar-width: thin;
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: $color-grey-600;
+    border-radius: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $color-grey-400;
+    border-radius: 5px;
+  }
+}
