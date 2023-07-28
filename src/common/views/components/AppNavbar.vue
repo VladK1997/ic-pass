@@ -40,21 +40,21 @@ const links = [
   {
     icon: "members",
     name: "Members",
-    route: "",
+    route: "Members",
     children: [],
     chips: "Coming soon",
   },
   {
     icon: "team",
     name: "Team",
-    route: "",
+    route: "Team",
     children: [],
     chips: "Coming soon",
   },
   {
     icon: "settings",
     name: "Settings",
-    route: "",
+    route: "Settings",
     children: [],
   },
 ];

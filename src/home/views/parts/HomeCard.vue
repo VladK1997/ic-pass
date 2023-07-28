@@ -25,7 +25,7 @@ const contentHeight = computed(() => {
 </script>
 <template>
   <div class="home-card" :class="{ autoHeight: autoHeight }" ref="cardRef">
-    <div class="home-card__header" ref="headerRef">
+    <div class="home-card__header" ref="headerRef" v-if="$slots.header">
       <div class="home-card__back" v-if="props.isBack" @click="$emit('back')">
         <AppIcon size="xxl" name="chevron-left" />
       </div>

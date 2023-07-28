@@ -6,7 +6,6 @@ import InstanceEditor from "@/home/views/parts/InstanceEditor.vue";
 import { useHomeStore } from "@/home/domain/homeStore";
 
 const homeStore = useHomeStore();
-
 </script>
 <template>
   <div class="home">
@@ -36,7 +35,7 @@ const homeStore = useHomeStore();
     flex-shrink: 1;
   }
   &__onboarding {
-    width: calc(50% - #{rem(5)});
+    min-width: calc(50% - #{rem(5)});
     flex-shrink: 0;
     flex-grow: 1;
   }
