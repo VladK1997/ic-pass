@@ -19,7 +19,17 @@ export const usePasswordStore = defineStore("passwordStore", () => {
     password.value = payload;
   }
   function resetStore() {
-    password.value = null;
+    password.value = {
+      template: "",
+      email: "",
+      password: "",
+      link: "",
+      tag: {
+        label: "Select Tag",
+        value: null,
+      },
+      notes: "",
+    };
   }
 
   return {

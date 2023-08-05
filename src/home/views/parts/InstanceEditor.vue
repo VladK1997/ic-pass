@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import {onMounted, ref} from "vue";
 
 import HomeCard from "./HomeCard.vue";
 import AppButton from "@/ui-kit/AppButton.vue";
@@ -9,16 +9,15 @@ import AppSelect from "@/ui-kit/AppSelect.vue";
 import AppTemplateSelect from "@/ui-kit/AppTemplateSelect.vue";
 import AppIcon from "@/ui-kit/AppIcon.vue";
 import AppTextarea from "@/ui-kit/AppTextarea.vue";
-import { useHomeStore } from "@/home/domain/homeStore";
 import { usePasswordStore } from "@/home/domain/passwordStore";
 import PasswordGenerator from "@/home/views/parts/PasswordGenerator.vue";
 import SelectTag from "@/home/views/parts/SelectTag.vue";
 
-const homeStore = useHomeStore();
 const passwordStore = usePasswordStore();
 
 const isGeneratePassword = ref(false);
 const isSelectTag = ref(false);
+const isNew = ref(true);
 const templateModel = ref({
   value: "",
   label: "",
@@ -40,14 +39,21 @@ function setTag(tag: string) {
     isSelectTag.value = false;
   }
 }
+onMounted(() => {
+  if (passwordStore.password) {
+    templateModel.value = passwordStore.password.template;
+    tagModel.value = passwordStore.password.tag;
+    isNew.value = false;
+  }
+});
 </script>
 <template>
   <HomeCard class="instance-editor" v-if="passwordStore.password">
     <template #header>
-      <div class="instance-editor__close">
+      <div class="instance-editor__close" @click="$emit('close')">
         <AppIcon size="xxl" name="cross-dark" />
       </div>
-      <h3 class="instance-editor__title subtitle-12">Add new Item</h3>
+      <h3 class="instance-editor__title subtitle-12">{{ isNew ? 'Add new Item' : 'Edit item'}}</h3>
     </template>
     <template #default>
       <div class="instance-editor__content" v-show="!isSelectTag">
@@ -82,7 +88,13 @@ function setTag(tag: string) {
             <span>Generate secure password</span>
           </AppButton>
           <div class="main-card-list__item">
-            <AppInput type="text" label="Link" placeholder="Type here" />
+            <AppInput
+              :default="passwordStore.password.link"
+              type="text"
+              label="Link"
+              placeholder="Type here"
+              @handleInputValue="(val) => (passwordStore.password.link = val)"
+            />
           </div>
           <div class="main-card-list__item">
             <AppSelect
@@ -143,6 +155,7 @@ function setTag(tag: string) {
     position: absolute;
     top: rem(22);
     left: rem(24);
+    cursor: pointer;
   }
 }
 .profile {

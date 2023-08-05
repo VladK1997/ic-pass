@@ -4,7 +4,14 @@ import Onboarding from "@/home/views/Onboarding.vue";
 import ProfileDetails from "@/home/views/parts/ProfileDetails.vue";
 import InstanceEditor from "@/home/views/parts/InstanceEditor.vue";
 import { useHomeStore } from "@/home/domain/homeStore";
+import { usePasswordStore } from "@/home/domain/passwordStore";
 
+const passwordStore = usePasswordStore();
+
+function closeInstanceEditor() {
+  homeStore.activeCard = "";
+  passwordStore.resetStore();
+}
 const homeStore = useHomeStore();
 </script>
 <template>
@@ -20,6 +27,7 @@ const homeStore = useHomeStore();
     />
     <InstanceEditor
       class="home__onboarding"
+      @close="closeInstanceEditor"
       v-if="homeStore.activeCard === 'createItem'"
     />
   </div>

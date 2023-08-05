@@ -21,8 +21,8 @@ const isDropdown = ref(true);
 const links = [
   {
     icon: "home",
-    name: "All passwords",
-    route: "Onboarding",
+    name: "Home",
+    route: "Home",
     children: [],
   },
   {

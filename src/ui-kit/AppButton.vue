@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import AppIcon from "@/ui-kit/AppIcon.vue";
 const emit = defineEmits(["click"]);
 type types = "primary" | "secondary" | "danger" | "transparent" | "outline";
 const props = defineProps<{
   type?: types;
   onHover?: types;
   disabled?: boolean;
+  iconLeft?: string;
+  iconRight?: string;
 }>();
 const btnType = computed<string>(() => props.type || "");
 </script>
@@ -16,7 +19,9 @@ const btnType = computed<string>(() => props.type || "");
     @click="emit('click')"
     :disabled="disabled"
   >
+    <AppIcon size="lg" :name="props.iconLeft" v-if="props.iconLeft" />
     <slot></slot>
+    <AppIcon size="lg" :name="props.iconRight" v-if="props.iconRight" />
   </button>
 </template>
 
@@ -36,6 +41,7 @@ const btnType = computed<string>(() => props.type || "");
     font-size: rem(16);
     font-weight: 300;
     line-height: rem(22);
+    font-family: inherit;
     background-color: transparent;
     border: 1px solid $color-grey-50;
     cursor: pointer;
