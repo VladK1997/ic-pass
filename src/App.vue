@@ -13,10 +13,11 @@ import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/auth/domain/authStore";
 
 const authStore = useAuthStore();
-const { isReady, isAuthenticated } = storeToRefs(authStore);
-if (isReady.value === false) {
-  authStore.init();
-}
+// const { isReady, isAuthenticated } = storeToRefs(authStore);
+// if (isReady.value === false) {
+authStore.init();
+
+// }
 
 const errorsStore = useErrorsStore();
 const popUpStore = usePopUpStore();

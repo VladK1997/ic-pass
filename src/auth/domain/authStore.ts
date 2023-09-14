@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref, toRaw} from "vue";
 import { AuthClient } from "@dfinity/auth-client";
 import type { ActorMethod, ActorSubclass, Identity } from "@dfinity/agent";
-import { createActor, canisterId } from "@/common/declarations/whoami";
+import { createActor, canisterId } from "@/common/declarations/icpass_backend";
 
 const defaultOptions = {
   /**
@@ -18,10 +18,7 @@ const defaultOptions = {
    * @type {import("@dfinity/auth-client").AuthClientLoginOptions}
    */
   loginOptions: {
-    identityProvider:
-      import.meta.env.DFX_NETWORK === "ic"
-        ? "https://identity.ic0.app/#authorize"
-        : `http://localhost:4943?canisterId=${import.meta.env.CANISTER_ID_INTERNET_IDENTITY}#authorize`,
+    identityProvider: "https://identity.ic0.app/#authorize"
   },
 };
 
@@ -48,6 +45,7 @@ export const useAuthStore = defineStore("auth", () => {
       : null;
     whoamiActor.value = identity.value ? actorFromIdentity(identity) : null;
     isReady.value = true;
+    login();
   }
 
   async function login() {
@@ -59,6 +57,7 @@ export const useAuthStore = defineStore("auth", () => {
         identity.value = isAuthenticated.value
           ? client.getIdentity()
           : null;
+        console.log((identity.value)? (identity.value.getPrincipal().toString()) : "not logged in");
         whoamiActor.value = identity.value
           ? actorFromIdentity(identity.value)
           : null;
