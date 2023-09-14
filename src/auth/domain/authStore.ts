@@ -1,8 +1,25 @@
 import { defineStore } from "pinia";
-import { ref, toRaw} from "vue";
+import { ref, toRaw } from "vue";
 import { AuthClient } from "@dfinity/auth-client";
 import type { ActorMethod, ActorSubclass, Identity } from "@dfinity/agent";
-import { createActor, canisterId } from "@/common/declarations/whoami";
+import {createActor
+} from "@/common/declarations/whoami";
+
+export type StoredKey = string | any;
+export class AuthClientStorage {
+  async get(key: string): Promise<StoredKey | null> {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : null;
+  }
+
+  async set(key: string, value: StoredKey): Promise<void>{
+    await localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  async remove(key: string): Promise<void> {
+    await localStorage.removeItem(key);
+  }
+}
 
 const defaultOptions = {
   /**
@@ -18,20 +35,9 @@ const defaultOptions = {
    * @type {import("@dfinity/auth-client").AuthClientLoginOptions}
    */
   loginOptions: {
-    identityProvider:
-      import.meta.env.DFX_NETWORK === "ic"
-        ? "https://identity.ic0.app/#authorize"
-        : `http://localhost:4943?canisterId=${import.meta.env.CANISTER_ID_INTERNET_IDENTITY}#authorize`,
+    identityProvider: `http://localhost:4943?canisterId=${import.meta.env.VITE_CANISTER_ID_INTERNET_IDENTITY}#authorize`,
   },
 };
-
-function actorFromIdentity(identity) {
-  return createActor(canisterId, {
-    agentOptions: {
-      identity,
-    },
-  });
-}
 
 export const useAuthStore = defineStore("auth", () => {
   const isReady = ref(false);
@@ -41,29 +47,45 @@ export const useAuthStore = defineStore("auth", () => {
   const whoamiActor = ref<ActorSubclass<Record<string, ActorMethod<unknown[], unknown>>> | null>(null);
 
   async function init() {
-    authClient.value = await AuthClient.create(defaultOptions.createOptions);
+    authClient.value = await AuthClient.create({
+      storage: new AuthClientStorage(),
+      keyType: "Ed25519",
+    });
     isAuthenticated.value = await authClient.value.isAuthenticated();
     identity.value = isAuthenticated.value
-      ? authClient.value.getIdentity()
+      ? await authClient.value.getIdentity()
       : null;
-    whoamiActor.value = identity.value ? actorFromIdentity(identity) : null;
+    whoamiActor.value = identity.value
+      ? await actorFromIdentity(identity)
+      : null;
+    await actorFromIdentity(identity.value);
     isReady.value = true;
+  }
+
+  async function actorFromIdentity(identity: any): any {
+    const actor = createActor(import.meta.env.VITE_CANISTER_ID);
+    console.log(identity);
+    return actor;
   }
 
   async function login() {
     const client = toRaw(authClient.value);
-    client?.login({
-      ...defaultOptions.loginOptions,
-      onSuccess: async () => {
-        isAuthenticated.value = await client.isAuthenticated();
-        identity.value = isAuthenticated.value
-          ? client.getIdentity()
-          : null;
-        whoamiActor.value = identity.value
-          ? actorFromIdentity(identity.value)
-          : null;
-      },
-    });
+    try {
+      await client?.login({
+        ...defaultOptions.loginOptions,
+        maxTimeToLive: 7 * 24 * 60 * 60 * 1000 * 1000 * 1000 as any,
+        onSuccess: async () => {
+          isAuthenticated.value = await client.isAuthenticated();
+          identity.value = isAuthenticated.value ? client.getIdentity() : null;
+          whoamiActor.value = identity.value
+            ? actorFromIdentity(identity.value)
+            : null;
+          console.log(whoamiActor);
+        },
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async function logout() {
@@ -76,6 +98,8 @@ export const useAuthStore = defineStore("auth", () => {
 
   return {
     init,
+    login,
+    logout,
     isReady,
     isAuthenticated,
     authClient,
